@@ -1,0 +1,116 @@
+// http://ionicframework.com/docs/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+$UNIT: 4vw;
+
+@mixin box($top, $left) {
+  top: $top;
+  left: $left;
+}
+
+.game-grid {
+  left: $UNIT * 2;
+  // top: 500px;
+  position: relative;
+}
+
+.box {
+  // @if 1vw > 1vh {
+  //   $UNIT: 4vh;
+  // }
+  $BOXSIDE: 4 * $UNIT;
+  $MARGIN: $UNIT;
+  $SPACING: $BOXSIDE + $MARGIN;
+
+  padding: 15px;
+  width: $BOXSIDE;
+  height: $BOXSIDE;
+  border: .5px solid black;
+  margin: $MARGIN;
+  text-align: center;
+  position: absolute;
+  font-size: $UNIT;
+  line-height: $BOXSIDE / 2;
+
+  @for $i from 0 through 15 {
+    $top: 0px;
+    @if $i < 16 { $top: $SPACING * 3; }
+    @if $i < 12 { $top: $SPACING * 2; }
+    @if $i < 8 { $top: $SPACING * 1; }
+    @if $i < 4 { $top: $SPACING * 0; }
+
+    $left: 0px;
+    @if $i % 4 == 3 { $left: $SPACING * 3; }
+    @if $i % 4 == 2 { $left: $SPACING * 2; }
+    @if $i % 4 == 1 { $left: $SPACING * 1; }
+    @if $i % 4 == 0 { $left: $SPACING * 0; }
+
+    &-#{$i} {
+      @include box($top, $left);
+    }
+  }
+}
+
+.digit {
+  &-0 {
+    color: lightgray;
+    background-color: lightgray;
+  }
+  &-2 {
+    color: #666666;
+    background-color: lightyellow;
+  }
+  &-4 {
+    color: #555555;
+    background-color: lightgreen;
+  }
+  &-8 {
+    color: black;
+    background-color: lightsalmon;
+  }
+  &-16 {
+    color: black;
+    background-color: lightpink;
+  }
+  &-32 {
+    color: black;
+    background-color: lightcoral;
+  }
+  &-64 {
+    color: black;
+    background-color: yellow;
+  }
+  &-128 {
+    color: black;
+    background-color: green;
+  }
+  &-256 {
+    color: black;
+    background-color: salmon;
+  }
+  &-512 {
+    color: black;
+    background-color: pink;
+  }
+  &-1024 {
+    color: black;
+    background-color: coral;
+  }
+  &-2048 {
+    color: lightgray;
+    background-color: red;
+  }
+}
