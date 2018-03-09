@@ -53,7 +53,7 @@ export function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function merge(grid: Number[], direction: string) {
+export function merge(grid: any[], direction: string) {
   switch(direction) {
     case 'LEFT':
       return recombine(getCellGroups(grid, true, false), direction);
@@ -66,7 +66,7 @@ export function merge(grid: Number[], direction: string) {
   }
 }
 
-export function mergeFourCellsLeft(fourcells: Number[]) {
+export function mergeFourCellsLeft(fourcells: any[]) {
   fourcells = removeZeroesLeft(fourcells);
   let cellA = fourcells[0];
   let cellB = fourcells[1];
@@ -124,14 +124,14 @@ export function recombine(group: any[], direction: string) {
   }
 }
 
-export function removeZeroesLeft(fourcells: Number[]) {
+export function removeZeroesLeft(fourcells: any[]) {
   let cells = fourcells.filter(c => c > 0);
   let zeroes = Array(4 - cells.length).fill(0);
   cells = [...cells, ...zeroes];
   return cells;
 }
 
-export function setupInitialCells(): Numer[] {
+export function setupInitialCells(): any[] {
   let grid = Array(16).fill(0);
   grid = addRandomNumber(grid);
   grid = addRandomNumber(grid);
