@@ -16,14 +16,12 @@ import * as actions from '../store/app.actions';
   </ion-header>
 
   <ion-content no-bounce>
-    <div id="game-grid">
-      <div class="game-grid">
-        <ng-template ngFor let-item [ngForOf]="($app | async).grid" let-i="index">
-          <div [ngClass]="['box', 'box-' + i, 'digit-' + item]">
-            {{item}}
-          </div>
-        </ng-template>
-      </div>
+    <div id="game-grid" class="game-grid">
+      <ng-template ngFor let-item [ngForOf]="($app | async).grid" let-i="index">
+        <div [ngClass]="['box', 'box-' + i, 'digit-' + item]">
+          {{item}}
+        </div>
+      </ng-template>
     </div>
   </ion-content>
 `
