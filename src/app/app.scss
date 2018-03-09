@@ -22,7 +22,7 @@ $UNIT: 4vw;
 }
 
 #game-grid {
-  height: 90vh;
+  height: 70vh;
   width: 100vw;
 }
 
@@ -56,7 +56,6 @@ $UNIT: 4vw;
 
   width: $BOXSIDE;
   height: $BOXSIDE;
-  // border: .5px solid black;
   border-radius: 3px;
   margin: $MARGIN;
   text-align: center;

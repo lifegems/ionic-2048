@@ -18,7 +18,7 @@ import * as actions from '../store/app.actions';
   <ion-content no-bounce>
     <div class="box-game-over" text-center *ngIf="($app | async).gameover !== null">
       <h1>Game over!</h1>
-      <h3 id="score">Final score: {{($app | async).points}}</h3>
+      <h4 id="score">Final score: {{($app | async).points}}</h4>
       <button ion-button (click)="startNewGame()">New Game</button>
     </div>
     <h3 id="score">Score: {{($app | async).points}}</h3>
