@@ -7,6 +7,15 @@ export function addRandomNumber(grid) {
   return grid;
 }
 
+export function doGridsMatch(gridA, gridB) {
+  for (let i = 0; i < 16; i++) {
+    if (gridA[i] !== gridB[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function getCellGroups(grid, blRows, blReverse) {
   let groups = [];
   for (let i = 1; i <= 4; i++) {
@@ -23,6 +32,16 @@ export function getColumn(grid, columnNum) {
     case 3: return [grid[2], grid[6], grid[10], grid[14]];
     case 4: return [grid[3], grid[7], grid[11], grid[15]];
   }
+}
+
+export function getEndGameState(grid) {
+  if (isWin(grid)) {
+    return true;
+  }
+  if (isLoss(grid)) {
+    return false;
+  }
+  return null;
 }
 
 export function getRow(grid, rowNum) {
@@ -49,8 +68,55 @@ export function getNextCell(grid) {
   return availableCells[randomIndex];
 }
 
+export function getNumberScore(gridNew, gridOld, digit) {
+  let count = gridNew.filter(c => c === digit).length - gridOld.filter(c => c === digit).length;
+  return (count > 0) ? count * digit : 0;
+}
+
 export function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function getRoundScore(gridNew, gridOld) {
+  let score = 0;
+  score += getNumberScore(gridNew, gridOld, 4);
+  score += getNumberScore(gridNew, gridOld, 8);
+  score += getNumberScore(gridNew, gridOld, 16);
+  score += getNumberScore(gridNew, gridOld, 32);
+  score += getNumberScore(gridNew, gridOld, 64);
+  score += getNumberScore(gridNew, gridOld, 128);
+  score += getNumberScore(gridNew, gridOld, 512);
+  score += getNumberScore(gridNew, gridOld, 1024);
+  score += getNumberScore(gridNew, gridOld, 2048);
+  return score;
+}
+
+function isLoss(g) {
+  if (g.filter(c => c === 0).length === 0) {
+    if (g[0] === g[1] || g[0] === g[4]
+     || g[1] === g[2] || g[1] === g[5]
+     || g[2] === g[3] || g[2] === g[6]
+                      || g[3] === g[7]
+     || g[4] === g[5] || g[4] === g[8]
+     || g[5] === g[6] || g[5] === g[9]
+     || g[6] === g[7] || g[6] === g[10]
+                      || g[7] === g[11]
+     || g[8] === g[9] || g[8] === g[12]
+     || g[9] === g[10] || g[9] === g[13]
+     || g[10] === g[11] || g[10] === g[14]
+                        || g[11] === g[15]
+     || g[12] === g[13]
+     || g[13] === g[14]
+     || g[14] === g[15]) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+function isWin(grid) {
+  return grid.filter(c => c === 2048).length >= 1;
 }
 
 export function merge(grid: any[], direction: string) {

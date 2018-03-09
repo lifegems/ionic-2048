@@ -16,6 +16,12 @@ import * as actions from '../store/app.actions';
   </ion-header>
 
   <ion-content no-bounce>
+    <div class="box-game-over" text-center *ngIf="($app | async).gameover !== null">
+      <h1>Game over!</h1>
+      <h3 id="score">Final score: {{($app | async).points}}</h3>
+      <button ion-button (click)="startNewGame()">New Game</button>
+    </div>
+    <h3 id="score">Score: {{($app | async).points}}</h3>
     <div id="game-grid" class="game-grid">
       <ng-template ngFor let-item [ngForOf]="($app | async).grid" let-i="index">
         <div [ngClass]="['box', 'box-' + i, 'digit-' + item]">
@@ -39,6 +45,10 @@ export class HomeContainer {
 
   ngAfterViewInit() {
     this.setupSwipeGesture();
+  }
+
+  startNewGame() {
+    this.store.dispatch(new actions.NewGameAction());
   }
 
   setupSwipeGesture() {

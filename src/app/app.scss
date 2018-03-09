@@ -22,8 +22,25 @@ $UNIT: 4vw;
 }
 
 #game-grid {
-  height: 100vh;
+  height: 90vh;
   width: 100vw;
+}
+
+#score {
+  height: 5vh;
+  margin-top: $UNIT;
+  margin-left: $UNIT;
+}
+
+.box-game-over {
+  position: absolute;
+  top: $UNIT * 10;
+  left: 5%;
+  background-color: teal;
+  border-radius: 5px;
+  z-index: 5;
+  padding: 30px 60px;
+  width: 90%;
 }
 
 .game-grid {
@@ -33,16 +50,14 @@ $UNIT: 4vw;
 }
 
 .box {
-  // @if 1vw > 1vh {
-  //   $UNIT: 4vh;
-  // }
   $BOXSIDE: 4 * $UNIT;
   $MARGIN: $UNIT;
   $SPACING: $BOXSIDE + $MARGIN;
 
   width: $BOXSIDE;
   height: $BOXSIDE;
-  border: .5px solid black;
+  // border: .5px solid black;
+  border-radius: 3px;
   margin: $MARGIN;
   text-align: center;
   position: absolute;
@@ -75,15 +90,15 @@ $UNIT: 4vw;
   }
   &-2 {
     color: #666666;
-    background-color: lightyellow;
+    background-color: yellow;
   }
   &-4 {
-    color: #555555;
-    background-color: lightgreen;
+    color: black;
+    background-color: #24D7EF;
   }
   &-8 {
     color: black;
-    background-color: lightsalmon;
+    background-color: #0890A3;
   }
   &-16 {
     color: black;
@@ -95,26 +110,26 @@ $UNIT: 4vw;
   }
   &-64 {
     color: black;
-    background-color: yellow;
+    background-color: #AE5834;
   }
   &-128 {
     color: black;
-    background-color: green;
+    background-color: #A34C08;
   }
   &-256 {
     color: black;
-    background-color: salmon;
+    background-color: #024C56;
   }
   &-512 {
     color: black;
-    background-color: pink;
+    background-color: #D63A20;
   }
   &-1024 {
     color: black;
-    background-color: coral;
+    background-color: #1B273D;
   }
   &-2048 {
-    color: lightgray;
-    background-color: red;
+    color: black;
+    background-color: #2060D6;
   }
 }

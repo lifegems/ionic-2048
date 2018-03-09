@@ -4,37 +4,60 @@ import * as game from '../lib/game';
 
 interface State {
   grid: Number[];
+  points: number;
+  gameover: any;
 }
 
 const initState: State = {
-  grid: game.setupInitialCells()
+  grid: game.setupInitialCells(),
+  points: 0,
+  gameover: null,
 };
 
 export const appReducer: ActionReducer<State, Action> = (state: State = initState, action: Action) => {
   switch(action.type) {
+    case actions.NEW_GAME: {
+      return initState;
+    }
     case actions.SWIPE_LEFT: {
       let grid = [...state.grid];
       grid = game.merge(grid, 'LEFT');
-      grid = game.addRandomNumber(grid);
-      return {...state, grid}
+      let points = state.points + game.getRoundScore(grid, state.grid);
+      if (!game.doGridsMatch(grid, state.grid)) {
+        grid = game.addRandomNumber(grid);
+      }
+      let gameover = game.getEndGameState(grid);
+      return {...state, grid, points, gameover};
     }
     case actions.SWIPE_RIGHT: {
       let grid = [...state.grid];
       grid = game.merge(grid, 'RIGHT');
-      grid = game.addRandomNumber(grid);
-      return {...state, grid}
+      let points = state.points + game.getRoundScore(grid, state.grid);
+      if (!game.doGridsMatch(grid, state.grid)) {
+        grid = game.addRandomNumber(grid);
+      }
+      let gameover = game.getEndGameState(grid);
+      return {...state, grid, points, gameover};
     }
     case actions.SWIPE_UP: {
       let grid = [...state.grid];
       grid = game.merge(grid, 'UP');
-      grid = game.addRandomNumber(grid);
-      return {...state, grid}
+      let points = state.points + game.getRoundScore(grid, state.grid);
+      if (!game.doGridsMatch(grid, state.grid)) {
+        grid = game.addRandomNumber(grid);
+      }
+      let gameover = game.getEndGameState(grid);
+      return {...state, grid, points, gameover};
     }
     case actions.SWIPE_DOWN: {
       let grid = [...state.grid];
       grid = game.merge(grid, 'DOWN');
-      grid = game.addRandomNumber(grid);
-      return {...state, grid}
+      let points = state.points + game.getRoundScore(grid, state.grid);
+      if (!game.doGridsMatch(grid, state.grid)) {
+        grid = game.addRandomNumber(grid);
+      }
+      let gameover = game.getEndGameState(grid);
+      return {...state, grid, points, gameover};
     }
     default:
       return {...state};
