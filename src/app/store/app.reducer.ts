@@ -20,7 +20,12 @@ const initState: State = {
 export const appReducer: ActionReducer<State, Action> = (state: State = initState, action: Action) => {
   switch(action.type) {
     case actions.NEW_GAME: {
-      return initState;
+      MyGame = new Game2048();
+      return {
+        grid: MyGame.getBoardArray(),
+        gameover: MyGame.GameOver(),
+        points: MyGame.getPoints(),
+      };
     }
     case actions.SWIPE_LEFT: {
       MyGame.move(Direction.Left);

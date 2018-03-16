@@ -24,7 +24,7 @@ import * as actions from '../store/app.actions';
     <h3 id="score">Score: {{($app | async).points}}</h3>
     <div id="game-grid" class="game-grid">
       <ng-template ngFor let-item [ngForOf]="($app | async).grid" let-i="index">
-        <div [ngClass]="['box', 'box-' + i, 'digit-' + item]">
+        <div [ngClass]="['box-' + size, 'box-' + size + '-' + i, 'digit-' + item]">
           {{item}}
         </div>
       </ng-template>
@@ -33,13 +33,12 @@ import * as actions from '../store/app.actions';
 `
 })
 export class HomeContainer {
-  private grid: Array<Number> = [];
   private hammer: any = Hammer;
   public lastDirection;
   public $app: any;
+  public size: number = 16;
 
   constructor(public navCtrl: NavController, public store: Store<any>) {
-    this.grid = new Array(16).fill(0);
     this.$app = this.store.select('app');
   }
 

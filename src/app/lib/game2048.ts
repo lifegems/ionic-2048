@@ -2,21 +2,22 @@ export enum Direction {
   Up, Down, Left, Right
 }
 
-const DEFAULT_GRID: string = "16";
+const DEFAULT_COLS: number = 4;
+const DEFAULT_ROWS: number = 4;
 
 export class Game2048 {
   private grid: number[] = [];
   private points: number = 0;
   private GAMEOVER_STATE: boolean = null;
 
-  constructor(grid: string = DEFAULT_GRID) {
-    if (grid === DEFAULT_GRID || grid.length !== 16) {
-      this.grid = Array(16).fill(0);
+  constructor(private rows: number = DEFAULT_ROWS, private cols: number = DEFAULT_COLS, defaultSet: string = "") {
+    if (rows === DEFAULT_ROWS && cols === DEFAULT_COLS) {
+      this.grid = Array(rows * cols).fill(0);
       this.addNumberToGrid();
       this.addNumberToGrid();
     } else {
-      for (let i = 0; i < grid.length; i++) {
-        this.grid.push(Number(grid[i]));
+      for (let i = 0; i < rows * cols; i++) {
+        this.grid.push(Number(defaultSet[i]));
       }
     }
   }
@@ -26,17 +27,19 @@ export class Game2048 {
   }
 
   public getBoardAscii(): string {
-    return `
-    ${this.grid[0]} ${this.grid[1]} ${this.grid[2]} ${this.grid[3]}
-    ${this.grid[4]} ${this.grid[5]} ${this.grid[6]} ${this.grid[7]}
-    ${this.grid[8]} ${this.grid[9]} ${this.grid[10]} ${this.grid[11]}
-    ${this.grid[12]} ${this.grid[13]} ${this.grid[14]} ${this.grid[15]}
-    `;
+    let board = "";
+    for (let i = 0; i < this.rows * this.cols; i++) {
+      board += (this.grid[i] === 0) ? " " : this.grid[i];
+      if ((i + 1) % this.cols === 0) {
+        board += "\n";
+      }
+    }
+    return board;
   }
 
   public getBoardString(): string {
-    let grid = "";
-    this.grid.forEach(i => grid += i);
+    let grid = "0";
+    this.grid.forEach(i => grid += `.${i}`);
     return grid;
   }
 
@@ -57,40 +60,37 @@ export class Game2048 {
     let oldGridString = this.getBoardString();
     switch(direction) {
       case Direction.Left: {
-        grid = this.setRow(grid, 0, this.squashSet(this.getRow(grid, 0)));
-        grid = this.setRow(grid, 1, this.squashSet(this.getRow(grid, 1)));
-        grid = this.setRow(grid, 2, this.squashSet(this.getRow(grid, 2)));
-        grid = this.setRow(grid, 3, this.squashSet(this.getRow(grid, 3)));
+        for (let i = 0; i < this.rows; i++) {
+          grid = this.setRow(grid, i, this.squashSet(this.getRow(grid, i)));
+        }
         break;
       };
       case Direction.Right: {
-        grid = this.setRow(grid, 0, this.squashSet(this.getRow(grid, 0).reverse()).reverse());
-        grid = this.setRow(grid, 1, this.squashSet(this.getRow(grid, 1).reverse()).reverse());
-        grid = this.setRow(grid, 2, this.squashSet(this.getRow(grid, 2).reverse()).reverse());
-        grid = this.setRow(grid, 3, this.squashSet(this.getRow(grid, 3).reverse()).reverse());
+        for (let i = 0; i < this.rows; i++) {
+          grid = this.setRow(grid, i, this.squashSet(this.getRow(grid, i).reverse()).reverse());
+        }
         break;
       };
       case Direction.Up: {
-        grid = this.setCol(grid, 0, this.squashSet(this.getCol(grid, 0)));
-        grid = this.setCol(grid, 1, this.squashSet(this.getCol(grid, 1)));
-        grid = this.setCol(grid, 2, this.squashSet(this.getCol(grid, 2)));
-        grid = this.setCol(grid, 3, this.squashSet(this.getCol(grid, 3)));
+        for (let i = 0; i < this.cols; i++) {
+          grid = this.setCol(grid, i, this.squashSet(this.getCol(grid, i)));
+        }
         break;
       };
       case Direction.Down: {
-        grid = this.setCol(grid, 0, this.squashSet(this.getCol(grid, 0).reverse()).reverse());
-        grid = this.setCol(grid, 1, this.squashSet(this.getCol(grid, 1).reverse()).reverse());
-        grid = this.setCol(grid, 2, this.squashSet(this.getCol(grid, 2).reverse()).reverse());
-        grid = this.setCol(grid, 3, this.squashSet(this.getCol(grid, 3).reverse()).reverse());
+        for (let i = 0; i < this.cols; i++) {
+          grid = this.setCol(grid, i, this.squashSet(this.getCol(grid, i).reverse()).reverse());
+        }
         break;
       };
     }
     this.points += this.getRoundScore(grid, this.grid);
     this.grid = grid;
+    if (this.isLoss(this.grid)) {
+      this.GAMEOVER_STATE = false;
+      return;
+    }
     if (oldGridString == this.getBoardString()) {
-      if (this.isLoss(this.grid)) {
-        this.GAMEOVER_STATE = false;
-      }
       return;
     }
     this.addNumberToGrid();
@@ -116,26 +116,25 @@ export class Game2048 {
     score += this.getNumberScore(gridNew, gridOld, 512);
     score += this.getNumberScore(gridNew, gridOld, 1024);
     score += this.getNumberScore(gridNew, gridOld, 2048);
+    score += this.getNumberScore(gridNew, gridOld, 5096);
+    score += this.getNumberScore(gridNew, gridOld, 11192);
     return score;
   }
 
   private getCol(grid, intIndex) {
-    return [
-      grid[0 + intIndex],
-      grid[4 + intIndex],
-      grid[8 + intIndex],
-      grid[12 + intIndex],
-    ]
+    let col = [];
+    for (let i = 0; i < this.rows; i++) {
+      col.push(grid[i * this.cols + intIndex]);
+    }
+    return col;
   }
 
   private getRow(grid: number[], intIndex) {
-    let rowItem = 4 * intIndex;
-    return [
-      grid[0 + rowItem],
-      grid[1 + rowItem],
-      grid[2 + rowItem],
-      grid[3 + rowItem],
-    ];
+    let row = [];
+    for (let i = 0; i < this.cols; i++) {
+      row.push(grid[i + this.cols * intIndex]);
+    }
+    return row;
   }
 
   private getRandomEmptyIndex(): number {
@@ -154,22 +153,15 @@ export class Game2048 {
 
   private isLoss(g: number[]): boolean {
     if (g.filter(c => c === 0).length === 0) {
-      if (g[0] === g[1] || g[0] === g[4]
-        || g[1] === g[2] || g[1] === g[5]
-        || g[2] === g[3] || g[2] === g[6]
-                        || g[3] === g[7]
-        || g[4] === g[5] || g[4] === g[8]
-        || g[5] === g[6] || g[5] === g[9]
-        || g[6] === g[7] || g[6] === g[10]
-                        || g[7] === g[11]
-        || g[8] === g[9] || g[8] === g[12]
-        || g[9] === g[10] || g[9] === g[13]
-        || g[10] === g[11] || g[10] === g[14]
-                          || g[11] === g[15]
-        || g[12] === g[13]
-        || g[13] === g[14]
-        || g[14] === g[15]) {
-        return false;
+      for (let i = 0; i < this.rows * this.cols; i++) {
+        // check item to the right
+        if (((i + 1) % this.cols !== 0) && ((i + 1) < this.rows * this.cols) && (g[i] === g[i + 1])) {
+          return false;
+        }
+        // check item below
+        if ((i + this.cols) < this.rows * this.cols && g[i] === g[i + this.cols]) {
+          return false;
+        }
       }
       return true;
     }
@@ -177,37 +169,35 @@ export class Game2048 {
   }
 
   private setCol(grid: number[], intIndex: number, cells: number[]) {
-    grid[intIndex + 0] = cells[0];
-    grid[intIndex + 4] = cells[1];
-    grid[intIndex + 8] = cells[2];
-    grid[intIndex + 12] = cells[3];
+    for (let i = 0; i < cells.length; i++) {
+      grid[intIndex + i * this.rows] = cells[i];
+    }
     return grid;
   }
 
   private setRow(grid: number[], intIndex: number, cells: number[]) {
-    grid[intIndex * 4 + 0] = cells[0];
-    grid[intIndex * 4 + 1] = cells[1];
-    grid[intIndex * 4 + 2] = cells[2];
-    grid[intIndex * 4 + 3] = cells[3];
+    for (let i = 0; i < cells.length; i++) {
+      grid[intIndex * this.cols + i] = cells[i];
+    }
     return grid;
   }
 
   private squashSet(cells: number[]): number[] {
+    let setLength = cells.length;
     cells = cells.filter(i => i !== 0);
-    cells.push(...Array(4 - cells.length).fill(0));
-    let [cellA, cellB, cellC, cellD] = cells;
+    cells.push(...Array(setLength - cells.length).fill(0));
 
-    let newSet: number[] = [cellA, cellB, cellC, cellD];
-    if (cellA === cellB && cellC === cellD) {
-      newSet = [cellA + cellB, cellC + cellD];
-    } else if (cellA === cellB) {
-      newSet = [cellA + cellB, cellC, cellD];
-    } else if (cellB === cellC) {
-      newSet = [cellA, cellB + cellC, cellD];
-    } else if (cellC === cellD) {
-      newSet = [cellA, cellB, cellC + cellD];
+    let newSet = [];
+    for (let i = 0; i < cells.length; i++) {
+      if ((i + 1) < cells.length && cells[i] === cells[i + 1]) {
+        newSet.push(cells[i] + cells[i + 1]);
+        i = i + 1;
+      } else {
+        newSet.push(cells[i]);
+      }
     }
-    newSet.push(...Array(4 - newSet.length).fill(0));
+
+    newSet.push(...Array(setLength - newSet.length).fill(0));
     return newSet;
   }
 }
